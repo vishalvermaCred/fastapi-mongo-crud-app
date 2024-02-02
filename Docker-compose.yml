@@ -1,0 +1,33 @@
+version: "1.0"
+
+networks:
+  my-network:
+    driver: bridge
+    external: true
+
+volumes:
+  amazin-data:
+    name: ./data/amazin-data
+
+services:
+  mongo-db:
+    image: mongo
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
+    expose:
+      - 27017
+    volumes:
+      - ./data/amazin-data:/data/db
+
+  web:
+    image: fastapi-mongo-crud
+    ports:
+      - '9200:9200'
+    networks:
+      - my-network
+    depends_on:
+      - mongo-db
+    restart: always
